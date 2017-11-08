@@ -1,6 +1,7 @@
 package com.ferreusveritas.nomisma;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class NomismaTab extends CreativeTabs {
@@ -21,8 +22,8 @@ public class NomismaTab extends CreativeTabs {
 	}
 	
 	@Override
-	public ItemStack getTabIconItem() {
-		return stack;
+	public Item getTabIconItem() {
+		return stack.getItem();
 	}
 
 }
