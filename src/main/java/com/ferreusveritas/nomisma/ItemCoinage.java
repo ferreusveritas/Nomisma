@@ -29,11 +29,9 @@ public class ItemCoinage extends Item {
 	}
 	
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (this.isInCreativeTab(tab)) {
-        	for(int i = 0; i < numTypes; i++) {
-        		items.add(new ItemStack(this, 1, i));
-        	}
+	public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> items) {
+        for(int i = 0; i < numTypes; i++) {
+        	items.add(new ItemStack(this, 1, i));
         }
 	}
 	

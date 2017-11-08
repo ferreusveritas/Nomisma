@@ -1,10 +1,10 @@
 package com.ferreusveritas.nomisma;
 
+import java.util.List;
 import java.util.Random;
 
 import com.ferreusveritas.nomisma.proxy.CommonProxy;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
@@ -14,12 +14,7 @@ import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -28,11 +23,9 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod(modid = Nomisma.MODID, version = Nomisma.VERSION, dependencies = "after:ThermalFoundation;after:Railcraft")
 public class Nomisma
@@ -76,7 +69,7 @@ public class Nomisma
 		
 		int loot = event.getLootingLevel();
 		
-		Entity attacker = event.getSource().getTrueSource();
+		Entity attacker = event.getSource().getEntity();
 		
 		if(!(event.isRecentlyHit() && (event.getSource().damageType.equals("arrow") || (event.getSource().damageType.equals("player") && attacker.getEyeHeight() > 1.0f)))){
 			return;//Stop Mob Grinders and Turtles from producing loot
@@ -131,37 +124,28 @@ public class Nomisma
 	public static class RegistrationHandler {
 
 		@SubscribeEvent
-		public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-			//final IForgeRegistry<Block> registry = event.getRegistry();
+		public static void registerBlocks() {
 		}
 		
 		@SubscribeEvent
-		public static void registerItems(final RegistryEvent.Register<Item> event) {
-			final IForgeRegistry<Item> registry = event.getRegistry();
-
-			registry.register(coinage);
+		public static void registerItems() {
+			GameRegistry.register(coinage);
 		}
 
-		@SubscribeEvent(priority = EventPriority.LOWEST)
-		public static void registerRecipes(final RegistryEvent.Register<IRecipe> event) {
-			//final IForgeRegistry<IRecipe> registry = event.getRegistry();
+		public static void registerRecipes() {
 			
 			for(int i = 0; i < ItemCoinage.numTypes - 1; i++){
 				
-				Ingredient inCoin = Ingredient.fromStacks(new ItemStack(Nomisma.coinage, 1, i));
+				ItemStack inCoin = new ItemStack(Nomisma.coinage, 1, i);
 				
 				GameRegistry.addShapelessRecipe(
-						new ResourceLocation(Nomisma.MODID, "coinageUp_" + i),
-						null,// Group
 						new ItemStack(Nomisma.coinage, 1, i + 1),// Output
-						new Ingredient[]{ inCoin, inCoin, inCoin, inCoin }// Input
+						new Object[]{ inCoin, inCoin, inCoin, inCoin }// Input
 					);
 				
 				GameRegistry.addShapelessRecipe(
-						new ResourceLocation(Nomisma.MODID, "coinageDown_" + i),
-						null,// Group
 						new ItemStack(Nomisma.coinage, 4, i),// Output
-						new Ingredient[]{ Ingredient.fromStacks(new ItemStack(Nomisma.coinage, 1, i + 1)) }// Input
+						new Object[] {new ItemStack(Nomisma.coinage, 1, i + 1)}// Input
 					);
 				
 				NuggetRecipe(0, 1, "nuggetIron");
@@ -182,7 +166,7 @@ public class Nomisma
 
 		private static void NuggetRecipe(int metadata, int numoutput, String nuggetName){
 			if(OreDictionary.doesOreNameExist(nuggetName)){
-				NonNullList<ItemStack> ores = OreDictionary.getOres(nuggetName);
+				List<ItemStack> ores = OreDictionary.getOres(nuggetName);
 				if(!ores.isEmpty()){
 					ItemStack nugget = ores.get(0);
 					nugget = new ItemStack(nugget.getItem(), numoutput, nugget.getItemDamage());
