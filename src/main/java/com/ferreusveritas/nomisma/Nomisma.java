@@ -34,7 +34,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@Mod(modid = Nomisma.MODID, version = Nomisma.VERSION, dependencies = "after:ThermalFoundation;after:Railcraft")
+@Mod(modid = Nomisma.MODID, version = Nomisma.VERSION, dependencies = "after:thermalfoundation;after:railcraft")
 public class Nomisma
 {
 
@@ -146,6 +146,8 @@ public class Nomisma
 		public static void registerRecipes(final RegistryEvent.Register<IRecipe> event) {
 			//final IForgeRegistry<IRecipe> registry = event.getRegistry();
 			
+			String nuggets[] = new String[] {"nuggetIron", "nuggetCopper", "nuggetSilver", "nuggetGold", "nuggetEnderium", "nuggetMithril"};
+			
 			for(int i = 0; i < ItemCoinage.numTypes - 1; i++){
 				
 				Ingredient inCoin = Ingredient.fromStacks(new ItemStack(Nomisma.coinage, 1, i));
@@ -164,20 +166,9 @@ public class Nomisma
 						new Ingredient[]{ Ingredient.fromStacks(new ItemStack(Nomisma.coinage, 1, i + 1)) }// Input
 					);
 				
-				NuggetRecipe(0, 1, "nuggetIron");
-				NuggetRecipe(1, 4, "nuggetIron");
-				NuggetRecipe(2, 1, "nuggetCopper");
-				NuggetRecipe(3, 4, "nuggetCopper");
-				NuggetRecipe(4, 1, "nuggetSilver");
-				NuggetRecipe(5, 4, "nuggetSilver");
-				NuggetRecipe(6, 1, "nuggetGold");
-				NuggetRecipe(7, 4, "nuggetGold");
-				NuggetRecipe(8, 1, "nuggetEnderium");
-				NuggetRecipe(9, 4, "nuggetEnderium");
-				NuggetRecipe(10, 1, "nuggetMithril");
-				NuggetRecipe(11, 4, "nuggetMithril");
-				
+				NuggetRecipe(i, (i & 1) == 0 ? 1 : 4, nuggets[i / 2]);
 			}
+			
 		}
 
 		private static void NuggetRecipe(int metadata, int numoutput, String nuggetName){
@@ -186,7 +177,7 @@ public class Nomisma
 				if(!ores.isEmpty()){
 					ItemStack nugget = ores.get(0);
 					nugget = new ItemStack(nugget.getItem(), numoutput, nugget.getItemDamage());
-					ItemStack coin = new ItemStack(coinage, 1, metadata);
+					ItemStack coin = new ItemStack(coinage, numoutput, metadata);
 					GameRegistry.addSmelting(coin, nugget, 0.0f);
 				} 
 			}
