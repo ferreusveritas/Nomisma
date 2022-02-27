@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "nomisma:coin_2"
+		},
+		{
+			"item": "nomisma:coin_2"
+		},
+		{
+			"item": "nomisma:coin_2"
+		},
+		{
+			"item": "nomisma:coin_2"
+		}
+	],
+	"result": {
+		"item": "nomisma:coin_3",
+		"count": 1
+	}
+}

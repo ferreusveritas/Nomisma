@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
+license="Code: MIT; Coin graphic assets: Copyright Thomas Feichtmeir"
+
+[[mods]]
+modId="nomisma"
+version="${file.jarVersion}"
+displayName="Nomisma"
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+logoFile="logo.png"
+credits="Programming: Ferreusveritas, Contains code from Vazkii's Autoreg library(WTFPL).;  Additional art assets: Thomas Feichtmeir(Cyangmou) for [Fantasy v1: 021 - Gold Pieces] pixel art asset(and contained derivative works)"
+authors="Ferreusveritas"
+
+description='''
+Simple Currency mod featuring RPG type coins and coin purses with easy recipes.
+'''
+
+[[dependencies.nomisma]] #optional
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.nomisma]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"

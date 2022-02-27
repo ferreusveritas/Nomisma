@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "nomisma:coin_3"
+	},
+	"result": { 
+		"item": "create:copper_nugget",
+		"count": 4
+	},
+	"experience": 32.0,
+	"cookingtime": 400,
+	"conditions" : [
+		{
+			"type": "forge:mod_loaded",
+			"modid": "create"
+		}
+	]
+}

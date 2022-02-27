@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "nomisma:coin_1"
+	},
+	"result": { 
+		"item": "minecraft:iron_nugget",
+		"count": 4
+	},
+	"experience": 2.0,
+	"cookingtime": 400
+}

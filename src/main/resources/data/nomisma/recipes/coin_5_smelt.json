@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "nomisma:coin_5"
+	},
+	"result": { 
+		"item": "minecraft:gold_nugget",
+		"count": 4
+	},
+	"experience": 512.0,
+	"cookingtime": 400
+}

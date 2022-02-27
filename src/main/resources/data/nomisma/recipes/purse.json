@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "minecraft:leather"
+		},
+		{
+			"item": "minecraft:string"
+		},
+		{
+			"item": "nomisma:coin_0"
+		}
+	],
+	"result": {
+		"item": "nomisma:purse",
+		"count": 1,
+		"nbt": { "coins": 1 }
+	}
+}
