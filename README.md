@@ -1,9 +1,6 @@
+[![](http://cf.way2muchnoise.eu/290952.svg)](https://www.curseforge.com/minecraft/mc-mods/nomisma) [![](http://cf.way2muchnoise.eu/versions/290952.svg)](https://www.curseforge.com/minecraft/mc-mods/nomisma)
+
 ![logo](https://user-images.githubusercontent.com/13294361/155899840-8fbc423c-0b2b-487e-a702-eda9aca40399.png)
-
-[CurseForge](https://www.curseforge.com/minecraft/mc-mods/nomisma)
-
-[![](http://cf.way2muchnoise.eu/290952.svg)](https://www.curseforge.com/minecraft/mc-mods/nomisma)
-[![](http://cf.way2muchnoise.eu/versions/290952.svg)](https://www.curseforge.com/minecraft/mc-mods/nomisma)
 
 Simple Currency mod featuring RPG type coins and coin purses with easy recipes.  Generally meant to be used for adventure maps or crafted worlds and economies.
 
