@@ -81,7 +81,7 @@ public class MobDropManager {
 	
 	private static boolean enableAntiCheese;
 	private static int numCheeseSquares;// Total number of anti-cheese rectangles in the area
-	private static ArrayList<CheeseRect> cheeseRects;
+	private static ArrayList<CheeseRect> cheeseRects = new ArrayList<>(0);
 	private static int cheeseSquareHitPoints;// Number of times a rect can have coin drops before it moves
 	private static int cheeseAreaWidth;// Width of the entire system in blocks.
 	private static int cheeseSquareWidth;// Width of a single anti-cheese hotspot in blocks
@@ -93,20 +93,31 @@ public class MobDropManager {
 	@SubscribeEvent
 	public static void onServerStartedEvent(final FMLServerStartedEvent serverStartedEvent) {
 		OptionsHolder.Common options = OptionsHolder.COMMON;
+		
 		enableAntiCheese = options.enableAntiCheese.get();
 		if(enableAntiCheese) {
 			numCheeseSquares = options.numCheeseSquares.get();// Total number of anti-cheese rectangles in the area
-			cheeseRects = new ArrayList<>(numCheeseSquares);
 			cheeseSquareHitPoints = options.cheeseSquareHitPoints.get();// Number of times a rect can have coin drops before it moves
 			cheeseAreaWidth = options.cheeseAreaWidth.get();;// Width of the entire system in blocks.
 			cheeseSquareWidth = options.cheeseSquareWidth.get();;// Width of a single anti-cheese hotspot in blocks
 			cheeseRange = cheeseAreaWidth - cheeseSquareWidth;
+			
+			randomizeCheeseSquares(new Random());
 		}
 		
 		enablePurseAutomaticCoinPickup = options.enablePurseAutomaticCoinPickup.get();
 		enableMobCoinDrops = options.enableMobCoinDrops.get();
 	}
 	
+	private static void randomizeCheeseSquares(Random rnd) {
+		cheeseRects = new ArrayList<>(numCheeseSquares);
+		
+		for(int i = 0; i < numCheeseSquares; i++) {
+			int x = rnd.nextInt(cheeseRange);
+			int z = rnd.nextInt(cheeseRange);
+			cheeseRects.add(new CheeseRect(x, z, x + cheeseSquareWidth, z + cheeseSquareWidth));
+		}
+	}
 	
 	public static boolean isUncheesed(Random rand, BlockPos pos, int lootLevel) {
 		if(!enableAntiCheese) {
@@ -116,7 +127,7 @@ public class MobDropManager {
 		int x = pos.getX() % cheeseAreaWidth;
 		int z = pos.getZ() % cheeseAreaWidth;
 		
-		for(int i = 0; i < numCheeseSquares; i++) {
+		for(int i = 0; i < cheeseRects.size(); i++) {
 			CheeseRect cheeseRect = cheeseRects.get(i);
 			if( cheeseRect.isInside(x, z, lootLevel * 2) ) {
 				if(cheeseRect.hit()) {
@@ -135,6 +146,7 @@ public class MobDropManager {
 	private static HashMap<Class<? extends LivingEntity>, Function<Integer, Integer>> dropMap;
 	
 	public static void init() {
+		
 		//Setup drop handlers
 		dropMap = new HashMap<>();
 		dropMap.put(ZombieEntity.class, i -> i < 96 ? ((i < 24) ? 2 : 1) : 0);
@@ -146,14 +158,6 @@ public class MobDropManager {
 		dropMap.put(EvokerEntity.class, i -> i < 64 ? 3 : 2);
 		dropMap.put(VindicatorEntity.class, i -> i < 64 ? 3 : 2);
 		dropMap.put(IllusionerEntity.class, i -> (i / 64) + 3);
-		
-		Random rnd = new Random();
-		
-		for(int i = 0; i < numCheeseSquares; i++) {
-			int x = rnd.nextInt(cheeseRange);
-			int z = rnd.nextInt(cheeseRange);
-			cheeseRects.add(new CheeseRect(x, z, x + cheeseSquareWidth, z + cheeseSquareWidth));
-		}
 	}
 	
 	@SubscribeEvent
@@ -165,23 +169,20 @@ public class MobDropManager {
 		
 		DamageSource damageSource = livingDropsEvent.getSource();
 		Entity killer = damageSource.getDirectEntity();
+		LivingEntity victim = livingDropsEvent.getEntityLiving();
 		
-		if(killer != null && killer.getClass().equals(ServerPlayerEntity.class)) { //Only an official player, not a fake player
-			//ServerPlayerEntity killerPlayer = (ServerPlayerEntity) killer;
-			
-			LivingEntity entity = livingDropsEvent.getEntityLiving();
-			
-			if(livingDropsEvent.isRecentlyHit() && dropMap.containsKey(entity.getClass())) {
-				World world = entity.level;
+		if(killer != null && !victim.level.isClientSide && killer.getClass().equals(ServerPlayerEntity.class)) { //Only an official player, not a fake player
+			if(livingDropsEvent.isRecentlyHit() && dropMap.containsKey(victim.getClass())) {
+				World world = victim.level;
 				Collection<ItemEntity> drops = livingDropsEvent.getDrops();
 				int lootLevel = livingDropsEvent.getLootingLevel();
 				int lootChance = world.random.nextInt() & 0xFF;//0 to 255
 				lootChance = MathHelper.clamp(lootChance - (lootLevel * 24), 0, 255);//-24 for every loot level
-				int addDrop = dropMap.get(entity.getClass()).apply(lootChance);
-				if(addDrop > 0 && isUncheesed(world.random, entity.blockPosition(), lootLevel)) {
+				int addDrop = dropMap.get(victim.getClass()).apply(lootChance);
+				if(addDrop > 0 && isUncheesed(world.random, victim.blockPosition(), lootLevel)) {
 					Item coin = NomismaItems.getCoin();
 					ItemStack newDrop = new ItemStack(coin, addDrop);
-					drops.add(new ItemEntity(world, entity.getX(), entity.getY(), entity.getZ(), newDrop));
+					drops.add(new ItemEntity(world, victim.getX(), victim.getY(), victim.getZ(), newDrop));
 				}
 			}
 		}
